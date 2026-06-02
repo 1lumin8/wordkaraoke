@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LyricSync Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-label="Karaoke creator">
+        <aside class="setup-panel">
+          <div class="brand-row">
+            <div class="brand-mark" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div>
+              <h1>LyricSync Studio</h1>
+              <p>Upload a song, paste lyrics, and build synced karaoke timing.</p>
+            </div>
+          </div>
+
+          <label class="file-drop" for="songFile">
+            <input id="songFile" type="file" accept="audio/*" />
+            <span class="file-icon" aria-hidden="true">Audio</span>
+            <span class="file-title">Choose song</span>
+            <span id="songName" class="file-meta">MP3, WAV, M4A, OGG</span>
+          </label>
+
+          <label class="field-label" for="lyricsInput">Lyrics</label>
+          <textarea
+            id="lyricsInput"
+            spellcheck="false"
+            placeholder="Paste the lyrics here, one line per lyric line..."
+          ></textarea>
+
+          <div class="control-grid">
+            <label>
+              <span>Sync quality</span>
+              <select id="syncMode">
+                <option value="balanced">Balanced</option>
+                <option value="performance">Faster</option>
+                <option value="expressive">More dramatic</option>
+              </select>
+            </label>
+            <label>
+              <span>First vocal</span>
+              <input id="vocalStartInput" type="number" value="0" step="0.1" min="0" />
+            </label>
+            <label>
+              <span>Last vocal</span>
+              <input id="vocalEndInput" type="number" value="0" step="0.1" min="0" />
+            </label>
+          </div>
+
+          <div class="calibration-row">
+            <button id="markVocalButton" class="secondary-button" disabled>Set first vocal</button>
+            <button id="markVocalEndButton" class="secondary-button" disabled>Set last vocal</button>
+            <button id="jumpVocalButton" class="secondary-button" disabled>Jump first</button>
+            <button id="jumpVocalEndButton" class="secondary-button" disabled>Jump last</button>
+          </div>
+
+          <div class="nudge-row" aria-label="Adjust first vocal marker">
+            <button class="secondary-button nudge-button" data-nudge="-1" disabled>-1s</button>
+            <button class="secondary-button nudge-button" data-nudge="-0.1" disabled>-0.1s</button>
+            <button class="secondary-button nudge-button" data-nudge="0.1" disabled>+0.1s</button>
+            <button class="secondary-button nudge-button" data-nudge="1" disabled>+1s</button>
+          </div>
+
+          <button id="syncButton" class="primary-button" disabled>
+            Generate karaoke sync
+          </button>
+
+          <div id="statusPanel" class="status-panel">
+            Waiting for an audio file and lyrics.
+          </div>
+        </aside>
+
+        <section class="stage-panel">
+          <div class="stage-top">
+            <div>
+              <p class="eyebrow">Live preview</p>
+              <h2 id="trackTitle">No song loaded</h2>
+            </div>
+            <div class="export-actions">
+              <button id="exportJson" class="ghost-button" disabled>JSON</button>
+              <button id="exportLrc" class="ghost-button" disabled>LRC</button>
+            </div>
+          </div>
+
+          <canvas
+            id="waveform"
+            width="1200"
+            height="240"
+            aria-label="Song waveform. Click or drag to scrub."
+          ></canvas>
+
+          <div class="karaoke-display" aria-live="polite">
+            <div id="previousLine" class="lyric-line muted"></div>
+            <div id="activeLine" class="active-line">Load a song to start.</div>
+            <div id="nextLine" class="lyric-line muted"></div>
+          </div>
+
+          <div class="tap-sync-panel">
+            <div id="saveBanner" class="save-banner" hidden>Saved in this browser</div>
+            <button id="startTapButton" class="primary-button tap-start-button" disabled>
+              Start tap sync
+            </button>
+            <button id="tapLineButton" class="tap-button" disabled>Tap next line</button>
+            <div class="tap-actions">
+              <button id="undoTapButton" class="secondary-button" disabled>Undo tap</button>
+              <button id="finishTapButton" class="secondary-button" disabled>Finish</button>
+              <button id="loadSavedButton" class="secondary-button" disabled>Load saved sync</button>
+            </div>
+            <div class="save-row">
+              <div id="tapProgress" class="tap-progress">0 lines tapped</div>
+              <div id="saveStatus" class="save-status">Not saved yet</div>
+            </div>
+          </div>
+
+          <audio id="audioPlayer" controls></audio>
+
+          <div id="timelineList" class="timeline-list" aria-label="Generated lyric timing"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
