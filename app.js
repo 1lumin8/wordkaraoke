@@ -28,6 +28,8 @@ const nextLine = document.querySelector("#nextLine");
 const timelineList = document.querySelector("#timelineList");
 const exportJson = document.querySelector("#exportJson");
 const exportLrc = document.querySelector("#exportLrc");
+const focusModeButton = document.querySelector("#focusModeButton");
+const exitFocusButton = document.querySelector("#exitFocusButton");
 
 let audioBuffer = null;
 let objectUrl = "";
@@ -70,8 +72,39 @@ audioPlayer.addEventListener("seeked", () => {
 });
 exportJson.addEventListener("click", () => downloadFile("lyricsync-timing.json", JSON.stringify(lyricMap, null, 2)));
 exportLrc.addEventListener("click", () => downloadFile("lyricsync-timing.lrc", toLrc(lyricMap)));
+focusModeButton.addEventListener("click", enterFocusMode);
+exitFocusButton.addEventListener("click", exitFocusMode);
+document.addEventListener("fullscreenchange", syncFocusModeState);
 document.addEventListener("keydown", handleKeyboardTap);
 window.addEventListener("resize", () => drawWaveform(audioPlayer.currentTime || 0));
+
+async function enterFocusMode() {
+  document.body.classList.add("focus-mode");
+  exitFocusButton.hidden = false;
+
+  try {
+    if (!document.fullscreenElement) {
+      await document.querySelector(".karaoke-display").requestFullscreen();
+    }
+  } catch {
+    statusPanel.textContent = "Focus mode opened. Use Exit to return.";
+  }
+}
+
+async function exitFocusMode() {
+  document.body.classList.remove("focus-mode");
+  exitFocusButton.hidden = true;
+
+  if (document.fullscreenElement) {
+    await document.exitFullscreen();
+  }
+}
+
+function syncFocusModeState() {
+  const active = Boolean(document.fullscreenElement);
+  document.body.classList.toggle("focus-mode", active);
+  exitFocusButton.hidden = !active;
+}
 
 async function loadSong() {
   const file = songFile.files?.[0];

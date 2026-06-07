@@ -85,6 +85,7 @@
               <h2 id="trackTitle">No song loaded</h2>
             </div>
             <div class="export-actions">
+              <button id="focusModeButton" class="ghost-button">Focus</button>
               <button id="exportJson" class="ghost-button" disabled>JSON</button>
               <button id="exportLrc" class="ghost-button" disabled>LRC</button>
             </div>
@@ -98,6 +99,7 @@
           ></canvas>
 
           <div class="karaoke-display" aria-live="polite">
+            <button id="exitFocusButton" class="exit-focus-button" hidden>Exit</button>
             <div id="previousLine" class="lyric-line muted"></div>
             <div id="activeLine" class="active-line">Load a song to start.</div>
             <div id="nextLine" class="lyric-line muted"></div>
